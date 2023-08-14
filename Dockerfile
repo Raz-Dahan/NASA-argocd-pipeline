@@ -4,6 +4,8 @@ WORKDIR /usr/src/app
 
 ENV API_KEY=${API_KEY}
 
+RUN echo "API_KEY in Dockerfile: $API_KEY"
+
 COPY NASA/ .
 
 RUN pip install --no-cache-dir -r requirements.txt

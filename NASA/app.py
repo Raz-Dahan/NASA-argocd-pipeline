@@ -26,6 +26,7 @@ def index():
 def get_nasa_image(date):
     secret_key = os.environ.get('API_KEY')
     url = f'https://api.nasa.gov/planetary/apod?api_key={secret_key}&date={date}'
+    print("API_KEY in app.py:", secret_key) # Debug
     response = requests.get(url)
     if response.status_code == 200:
         data = response.json()
