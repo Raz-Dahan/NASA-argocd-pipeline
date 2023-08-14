@@ -32,3 +32,5 @@ jobs:
           file: Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/nasa-app-gha:${{ steps.build_number.outputs.number }}
+          build-args: |
+            API_KEY=${{ secrets.API_KEY }}
