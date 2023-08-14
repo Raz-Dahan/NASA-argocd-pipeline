@@ -1,4 +1,4 @@
-name: Kubernetes CI/CD
+name: NASA App Pipline
 on:
   push:
     branches:
