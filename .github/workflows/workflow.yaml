@@ -29,6 +29,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: Github-Actions-pipeline/NASA/Dockerfile
+          file: NASA\Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/nasa-app-gha:${{ steps.build_number.outputs.number }}
