@@ -34,5 +34,5 @@ jobs:
           build-args: |
             API_KEY=${{ secrets.API_KEY }}
         
-        - name: Debug Environment Variables
-          run: env
+      - name: Debug Environment Variables
+        run: env
