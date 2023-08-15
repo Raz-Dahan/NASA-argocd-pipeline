@@ -33,3 +33,6 @@ jobs:
           tags: ${{ secrets.DOCKER_USERNAME }}/gha-pipeline:${{ env.TAG }}
           build-args: |
             API_KEY=${{ secrets.API_KEY }}
+        
+        - name: Debug Environment Variables
+          run: env
