@@ -68,10 +68,10 @@ jobs:
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v0.3.0
         with:
-          project_id: $PROJECT_ID
+          project_id: ${{ env.PROJECT_ID }}
           service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
           export_default_credentials: true
 
       - name: Upload Helm Chart to GCP
         run: |
-          gsutil cp ./chart/*.tgz gs://$BUCKET_NAME
+          gsutil cp ./chart/*.tgz gs://${{ env.BUCKET_NAME }}
