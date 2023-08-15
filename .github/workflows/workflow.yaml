@@ -7,6 +7,7 @@ on:
 env:
   PROJECT_ID: named-signal-392608
   BUCKET_NAME: gha-chart-packages
+  HELM_PACKAGE: ${{ env.HELM_PACKAGE }}
   TAG: v1.${{ github.run_number }}
 
 jobs:
@@ -73,4 +74,42 @@ jobs:
 
       - name: Upload Helm Chart to GCP
         run: |
-          gsutil cp ./chart/*.tgz gs://${{ env.BUCKET_NAME }}
+          gsutil cp ./chart/${{ env.HELM_PACKAGE }} gs://${{ env.BUCKET_NAME }}
+
+  test:
+    needs: package
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v0.3.0
+      with:
+        version: '343.0.0'
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
+    - name: Configure kubectl
+      run: |
+        gcloud container clusters get-credentials test-cluster --region us-central1-a
+
+    - name: Install and configure Helm
+      run: |
+        curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+        chmod 700 get_helm.sh
+        ./get_helm.sh
+
+    - name: Download Helm chart from GCP bucket
+      run: |
+        gsutil cp gs://${{ env.BUCKET_NAME }}/${{ env.HELM_PACKAGE }} .
+
+    - name: Deploy Helm chart
+      run: |
+        helm upgrade --install nasa-app ${{ env.HELM_PACKAGE }}
+
+    - name: Run Helm Tests
+      run: |
+        helm test nasa-app
+
