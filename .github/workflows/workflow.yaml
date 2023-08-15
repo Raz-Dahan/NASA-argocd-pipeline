@@ -43,7 +43,7 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/gha-pipeline:$TAG
+          tags: ${{ secrets.DOCKER_USERNAME }}/gha-pipeline:${{ env.TAG }}
 
   package:
     needs: build
