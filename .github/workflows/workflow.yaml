@@ -27,7 +27,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # - name: Build and Push Docker Image
+      # - name: Build and Push Docker Image                                           # fix api key problem
       #   uses: docker/build-push-action@v2
       #   with:
       #     context: .
@@ -87,15 +87,15 @@ jobs:
       run: |
         gcloud container clusters get-credentials test-cluster --region us-central1-a
 
-    # - name: Install and configure Helm
+    # - name: Install and configure Helm                                              # not necessary
     #   run: |
     #     curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
     #     chmod 700 get_helm.sh
     #     ./get_helm.sh
 
-    - name: Download Helm chart from GCP bucket
-      run: |
-        gsutil cp gs://${{ env.BUCKET_NAME }}/${{ env.HELM_PACKAGE }} .
+    # - name: Download Helm chart from GCP bucket                                     # CommandException: No URLs matched: gs://gha-chart-packages/nasa-app.1.36.0.tgz
+    #   run: |
+    #     gsutil cp gs://${{ env.BUCKET_NAME }}/${{ env.HELM_PACKAGE }} .
 
     - name: Deploy Helm chart
       run: |
