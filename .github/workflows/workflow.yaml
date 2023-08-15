@@ -45,25 +45,6 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/gha-pipeline:${{ env.TAG }}
 
-  setup:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Set up Google Cloud SDK
-      uses: google-github-actions/setup-gcloud@v0.3.0
-      with:
-        project_id: ${{ env.PROJECT_ID }}
-        service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-        export_default_credentials: true
-
-  package:
-    needs: [setup, build]
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
       - name: Create Helm Chart files
         run: |
           echo "apiVersion: v2" > ./chart/Chart.yaml
@@ -75,28 +56,42 @@ jobs:
       - name: Package Helm Chart
         run: |
           helm package ./chart -d ./chart
+    
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v0.3.0
+      with:
+        project_id: ${{ env.PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+        export_default_credentials: true
 
       - name: Upload Helm Chart to GCP
         run: |
           gsutil cp ./chart/*.tgz gs://${{ env.BUCKET_NAME }}
 
   test:
-    needs: [setup, package]
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v0.3.0
+      with:
+        project_id: ${{ env.PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+        export_default_credentials: true
+
     - name: Configure kubectl
       run: |
         gcloud container clusters get-credentials test-cluster --region us-central1-a
 
-    - name: Install and configure Helm
-      run: |
-        curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
-        chmod 700 get_helm.sh
-        ./get_helm.sh
+    # - name: Install and configure Helm
+    #   run: |
+    #     curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+    #     chmod 700 get_helm.sh
+    #     ./get_helm.sh
 
     - name: Download Helm chart from GCP bucket
       run: |
