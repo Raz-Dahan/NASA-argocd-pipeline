@@ -11,6 +11,17 @@ env:
   TAG: v1.${{ github.run_number }}
 
 jobs:
+  setup:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v0.3.0
+      with:
+        project_id: ${{ env.PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+        export_default_credentials: true
+
   build:
     runs-on: ubuntu-latest
 
@@ -46,7 +57,7 @@ jobs:
           tags: ${{ secrets.DOCKER_USERNAME }}/gha-pipeline:${{ env.TAG }}
 
   package:
-    needs: build
+    needs: [setup, build]
     runs-on: ubuntu-latest
 
     steps:
@@ -65,31 +76,17 @@ jobs:
         run: |
           helm package ./chart -d ./chart
 
-      - name: Set up Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0.3.0
-        with:
-          project_id: ${{ env.PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-          export_default_credentials: true
-
       - name: Upload Helm Chart to GCP
         run: |
           gsutil cp ./chart/*.tgz gs://${{ env.BUCKET_NAME }}
 
   test:
-    needs: package
+    needs: [setup, package]
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-
-    - name: Set up Google Cloud SDK
-      uses: google-github-actions/setup-gcloud@v0.3.0
-      with:
-        version: '343.0.0'
-      env:
-        GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
 
     - name: Configure kubectl
       run: |
