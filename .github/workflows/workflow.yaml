@@ -7,7 +7,6 @@ on:
 env:
   PROJECT_ID: named-signal-392608
   BUCKET_NAME: gha-chart-packages
-  API_KEY: ${{ secrets.API_KEY }}
   TAG: v1.${{ github.run_number }}
 
 jobs:
@@ -35,7 +34,7 @@ jobs:
       #     push: true
       #     tags: ${{ secrets.DOCKER_USERNAME }}/gha-pipeline:${{ env.TAG }}
       #     build-args: |
-      #       API_KEY=$API_KEY
+      #       API_KEY=${{ secrets.API_KEY }}
         
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v2
