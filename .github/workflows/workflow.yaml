@@ -103,7 +103,7 @@ jobs:
 
     - name: Deploy Helm chart
       run: |
-        helm upgrade --install nasa-app ${{ env.HELM_PACKAGE }}
+        helm upgrade --install nasa-app ./chart/${{ env.HELM_PACKAGE }}
 
     - name: Run Helm Tests
       run: |
