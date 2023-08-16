@@ -127,3 +127,38 @@ jobs:
     - name: Deploy Helm chart
       run: |
         helm upgrade --install nasa-app ${{ env.HELM_PACKAGE }}
+
+  monitor:
+    needs: deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0.3.0
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          export_default_credentials: true
+
+      - name: Get GKE plugin
+        run: |
+          gcloud components install gke-gcloud-auth-plugin
+
+      - name: Configure kubectl
+        run: |
+          gcloud container clusters get-credentials prod-cluster --region us-central1-a
+
+      - name: Check and Install Prometheus and Grafana
+        run: |
+          if helm list -n monitoring | grep -q "prometheus"; then
+            echo "Prometheus is already installed."
+          else
+            kubectl create namespace monitoring
+            helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+            helm repo update
+            helm install prometheus prometheus-community/kube-prometheus-stack --namespace monitoring
+            echo "Prometheus installed."
+          fi
