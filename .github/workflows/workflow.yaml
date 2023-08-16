@@ -45,7 +45,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./NASA
-          file: Dockerfile
+          file: ./NASA/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/gha-pipeline:${{ env.TAG }}
 
