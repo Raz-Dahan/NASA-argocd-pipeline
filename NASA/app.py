@@ -2,8 +2,10 @@ from flask import Flask, render_template, request
 from datetime import date
 import requests
 import os
+from dotenv import load_dotenv
 from redis import Redis
 
+load_dotenv()
 redis = Redis(host='redis', port=6379)
 
 app = Flask(__name__)
@@ -24,9 +26,8 @@ def index():
         return render_template('index.html', today_image_url=today_data['url'],today_describe_url=today_data['title'], logo_url=logo_url, icon_url=icon_url, count=int(count)) 
 
 def get_nasa_image(date):
-    secret_key = os.environ.get('API_KEY')
+    secret_key = os.getenv('API_KEY')
     url = f'https://api.nasa.gov/planetary/apod?api_key={secret_key}&date={date}'
-    print("API_KEY in app.py:", secret_key) # Debug
     response = requests.get(url)
     if response.status_code == 200:
         data = response.json()

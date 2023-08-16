@@ -36,11 +36,15 @@ jobs:
       #     tags: ${{ secrets.DOCKER_USERNAME }}/gha-pipeline:${{ env.TAG }}
       #     build-args: |
       #       API_KEY=${{ secrets.API_KEY }}
+
+      - name: Create Docker env
+        run: |
+          echo "API_KEY=${{ secrets.API_KEY }}" > ./NASA/.env
         
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v2
         with:
-          context: .
+          context: ./NASA
           file: Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/gha-pipeline:${{ env.TAG }}
