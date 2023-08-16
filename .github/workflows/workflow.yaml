@@ -7,7 +7,7 @@ on:
 env:
   PROJECT_ID: named-signal-392608
   BUCKET_NAME: gha-chart-packages
-  HELM_PACKAGE: nasa-app.1.${{ github.run_number }}.0.tgz
+  HELM_PACKAGE: nasa-app-1.${{ github.run_number }}.0.tgz
   TAG: v1.${{ github.run_number }}
 
 jobs:
@@ -66,7 +66,7 @@ jobs:
 
       - name: Upload Helm Chart to GCP
         run: |
-          gsutil cp ./chart/*.tgz gs://${{ env.BUCKET_NAME }}
+          gsutil cp ./chart/${{ env.HELM_PACKAGE }} gs://${{ env.BUCKET_NAME }}
 
   test:
     needs: build
