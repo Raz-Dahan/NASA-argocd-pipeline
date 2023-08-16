@@ -66,7 +66,7 @@ jobs:
 
       - name: Upload Helm Chart to GCP
         run: |
-          gsutil cp ./chart/${{ env.HELM_PACKAGE }} gs://${{ env.BUCKET_NAME }}
+          gsutil cp ./chart/*.tgz gs://${{ env.BUCKET_NAME }}
 
   test:
     needs: build
@@ -97,7 +97,7 @@ jobs:
     #     chmod 700 get_helm.sh
     #     ./get_helm.sh
 
-    - name: Download Helm chart from GCP bucket                                     # CommandException: No URLs matched: gs://gha-chart-packages/nasa-app.1.36.0.tgz
+    - name: Download Helm chart from GCP bucket
       run: |
         gsutil cp gs://${{ env.BUCKET_NAME }}/${{ env.HELM_PACKAGE }} .
 
