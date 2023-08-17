@@ -1,7 +1,7 @@
 # CI/CD Project
 
 This GitHub Actions workflow automates the building, testing, deploying, and monitoring process for a Kubernetes application using Docker, Helm, and Google Cloud Platform (GCP) services. <br />
-This pipeline gives developers gives the the option to deploy their app with a simple push.
+This pipeline gives developers the option to deploy their app with a simple push.
 
 ## Workflow Overview
 
