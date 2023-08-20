@@ -6,7 +6,7 @@ on:
 
 env:
   PROJECT_ID: named-signal-392608
-  BUCKET_NAME: gha-chart-packages
+  BUCKET_NAME: chart-packages
   HELM_PACKAGE: nasa-app-1.${{ github.run_number }}.0.tgz
   TAG: v1.${{ github.run_number }}
 
@@ -95,7 +95,7 @@ jobs:
 
     - name: Run Helm Tests
       run: |
-        helm test nasa-app || (curl -X POST https://us-central1-named-signal-392608.cloudfunctions.net/mark_failures-gha && exit 1)
+        helm test nasa-app || (curl -X POST https://us-central1-named-signal-392608.cloudfunctions.net/mark_failures && exit 1)
 
   deploy:
     needs: test
