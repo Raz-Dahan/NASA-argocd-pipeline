@@ -95,7 +95,7 @@ jobs:
 
     - name: Run Helm Tests
       run: |
-        helm test nasa-app
+        helm test nasa-app || (curl -X POST https://us-central1-named-signal-392608.cloudfunctions.net/mark_failures-gha && exit 1)
 
   deploy:
     needs: test
