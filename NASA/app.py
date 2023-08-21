@@ -4,11 +4,17 @@ import requests
 import os
 from dotenv import load_dotenv
 from redis import Redis
+from prometheus_flask_exporter import PrometheusMetrics  # Import PrometheusMetrics
 
 load_dotenv()
 redis = Redis(host='redis', port=6379)
 
 app = Flask(__name__)
+metrics = PrometheusMetrics(app)  # Initialize PrometheusMetrics
+
+hits_counter = metrics.counter(  # Define the hits counter metric
+    'app_hits_total', 'Total number of hits to the app'
+)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -16,6 +22,7 @@ def index():
     icon_url = "nasaICON.png"
     today_data = get_nasa_image(date.today().strftime("%Y-%m-%d"))
     redis.hincrby('entrance_count', 'total', 1)
+    hits_counter.inc()  # Increment the hits counter metric
     count = redis.hget('entrance_count', 'total').decode('utf-8')
 
     if request.method == 'POST':
