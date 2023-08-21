@@ -1,6 +1,6 @@
 import requests
 
-DOCKER_USERNAME="***"
+DOCKER_USERNAME="***" # Use GCP Project Secrets to enter the variables
 DOCKER_PASSWORD="***"
 
 def delete_oldest_tags(request):
