@@ -22,7 +22,7 @@ def index():
     icon_url = "nasaICON.png"
     today_data = get_nasa_image(date.today().strftime("%Y-%m-%d"))
     redis.hincrby('entrance_count', 'total', 1)
-    hits_counter.inc()  # Increment the hits counter metric
+    hits_counter.labels().inc()  # Increment the hits counter metric
     count = redis.hget('entrance_count', 'total').decode('utf-8')
 
     if request.method == 'POST':
