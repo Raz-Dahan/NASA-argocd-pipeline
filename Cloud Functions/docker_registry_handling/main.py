@@ -1,7 +1,9 @@
 import requests
+import os
 
-DOCKER_USERNAME="***" # Use GCP Project Secrets to enter the variables
-DOCKER_PASSWORD="***"
+# Use GCP Project Secrets to enter the variables
+DOCKER_USERNAME = os.environ.get('DOCKER_USERNAME')
+DOCKER_PASSWORD = os.environ.get('DOCKER_PASSWORD')
 
 def delete_oldest_tags(request):
     repository = "razdahan31/gha-pipeline"
