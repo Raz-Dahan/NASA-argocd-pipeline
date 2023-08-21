@@ -1,6 +1,6 @@
 from google.cloud import storage
 
-def delete_oldest_objects(data, context):
+def delete_oldest_objects(request): #data, context):
     # bucket_name = data['bucket']
     bucket_name = "chart-packages"
     
@@ -15,4 +15,5 @@ def delete_oldest_objects(data, context):
         for blob in blobs_sorted[:excess_count]:
             blob.delete()
 
-    print(f"Deleted {excess_count} objects from {bucket_name}.")
+    deletion_message = f"Deleted {excess_count} objects from {bucket_name}."
+    return deletion_message
