@@ -163,3 +163,20 @@ jobs:
             helm install prometheus prometheus-community/kube-prometheus-stack --namespace monitoring -f prometheus-values.yaml
             echo "Prometheus installed."
           fi
+
+  cleanups:
+    needs: deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clean failed packages if there are more than 5
+        run: |
+          curl https://us-central1-named-signal-392608.cloudfunctions.net/failures_handling
+
+      - name: Clean Bucket packages if there are more than 20
+        run: |
+          curl https://us-central1-named-signal-392608.cloudfunctions.net/bucket_handling
+
+      - name: Clean images in DockerHub if there are more than 20
+        run: |
+          curl https://us-central1-named-signal-392608.cloudfunctions.net/docker_registry_handling
