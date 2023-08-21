@@ -1,7 +1,8 @@
 from google.cloud import storage
 
 def handle_failures(data, context):
-    bucket_name = data['bucket']
+    # bucket_name = data['bucket']
+    bucket_name = "chart-packages"
     
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
