@@ -3,7 +3,7 @@ import requests
 DOCKER_USERNAME="***"
 DOCKER_PASSWORD="***"
 
-def delete_oldest_tags(data, context):
+def delete_oldest_tags(request):
     repository = "razdahan31/gha-pipeline"
     url = f"https://hub.docker.com/v2/repositories/{repository}/tags"
     tags = []
@@ -19,7 +19,6 @@ def delete_oldest_tags(data, context):
             "Content-Type": "application/json"
         }
         
-        # Authenticate and get the JWT token
         auth_response = requests.post(
             "https://hub.docker.com/v2/users/login/",
             json={"username": DOCKER_USERNAME, "password": DOCKER_PASSWORD},
@@ -33,7 +32,7 @@ def delete_oldest_tags(data, context):
             print("Authentication failed")
             return
         
-        tags_to_delete = tags[10:]
+        tags_to_delete = tags[20:]
         for tag in tags_to_delete:
             delete_url = f"https://hub.docker.com/v2/repositories/{repository}/tags/{tag}/"
             delete_response = requests.delete(delete_url, headers=headers)
