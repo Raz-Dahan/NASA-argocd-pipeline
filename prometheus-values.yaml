@@ -1,0 +1,9 @@
+prometheus:
+  prometheusSpec:
+    scrapeInterval: 15s
+    scrapeTimeout: 10s
+    evaluationInterval: 15s
+    scrape_configs:
+      - job_name: 'nasa-app'
+        static_configs:
+          - targets: ['nasa-service:5000']

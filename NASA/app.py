@@ -1,17 +1,15 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, Response
 from datetime import date
 import requests
 import os
 from dotenv import load_dotenv
 from redis import Redis
-from prometheus_flask_exporter import PrometheusMetrics  # Import PrometheusMetrics
-from prometheus_client import Counter
+from prometheus_client import generate_latest, Counter # Prometheus connection library
 
 load_dotenv()
 redis = Redis(host='redis', port=6379)
 
 app = Flask(__name__)
-metrics = PrometheusMetrics(app)  # Initialize PrometheusMetrics
 
 hits_counter = Counter('app_hits_total', 'Total number of hits to the app')  # Create the counter metric
 
@@ -40,6 +38,10 @@ def get_nasa_image(date):
         if 'url' in data:
             return data
     return None
+
+@app.route('/metrics', methods=['GET']) # Metricas route
+def metrics():
+    return Response(generate_latest(), content_type="text/plain")
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
