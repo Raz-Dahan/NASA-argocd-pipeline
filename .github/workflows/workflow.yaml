@@ -4,6 +4,10 @@ on:
   #   branches:
   #     - main
   workflow_dispatch:
+    inputs:
+      run_name:
+        description: "Name for the workflow run"
+        required: true
 
 env:
   PROJECT_ID: named-signal-392608
