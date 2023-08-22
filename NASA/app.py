@@ -1,17 +1,14 @@
-from flask import Flask, render_template, request, Response
+from flask import Flask, render_template, request
 from datetime import date
 import requests
 import os
 from dotenv import load_dotenv
 from redis import Redis
-from prometheus_client import generate_latest, Counter # Prometheus connection library
 
 load_dotenv()
 redis = Redis(host='redis', port=6379)
 
 app = Flask(__name__)
-
-hits_counter = Counter('app_hits_total', 'Total number of hits to the app')  # Create the counter metric
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -19,7 +16,6 @@ def index():
     icon_url = "nasaICON.png"
     today_data = get_nasa_image(date.today().strftime("%Y-%m-%d"))
     redis.hincrby('entrance_count', 'total', 1)
-    hits_counter.inc()  # Increment the hits counter metric
     count = redis.hget('entrance_count', 'total').decode('utf-8')
 
     if request.method == 'POST':
@@ -38,10 +34,6 @@ def get_nasa_image(date):
         if 'url' in data:
             return data
     return None
-
-@app.route('/metrics', methods=['GET']) # Metricas route
-def metrics():
-    return Response(generate_latest(), content_type="text/plain")
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")

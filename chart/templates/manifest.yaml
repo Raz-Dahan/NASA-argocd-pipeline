@@ -2,10 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nasa-deployment
-  annotations:
-    prometheus.io/scrape: "true"      # Enable Prometheus scraping
-    prometheus.io/path: "/metrics"  # Endpoint where your Flask app exposes metrics
-    prometheus.io/port: "5000"        # Port where your Flask app is running
 spec:
   replicas: 3
   selector:
