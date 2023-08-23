@@ -29,7 +29,7 @@ This pipeline gives developers the option to deploy their app with a simple push
    - `PROJECT_ID`: Your GCP project ID.
    - `BUCKET_NAME`: Name of the GCP bucket to store Helm packages.
    - `HELM_PACKAGE`: Helm package file name.
-   - `TAG`: Tag for Docker image and Helm chart version.
+   - `TAG`: Tag for Docker image and Helm chart version coming from `versionung.sh`.
 
 3. That's it! Push your code changes to the `main` branch to trigger the workflow.
 
