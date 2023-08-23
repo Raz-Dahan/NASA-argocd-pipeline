@@ -49,7 +49,7 @@ jobs:
         run: |
           echo "apiVersion: v2" > ./chart/Chart.yaml
           echo "name: nasa-app" >> ./chart/Chart.yaml
-          echo "version: ${{ env.HELM_PACKAGE }}" >> ./chart/Chart.yaml
+          echo "version: ${{ env.TAG }}" >> ./chart/Chart.yaml
           echo "description: A Helm chart for deploying Flask and Redis" >> ./chart/Chart.yaml
           echo "TAG: ${{ env.TAG }}" > ./chart/values.yaml
 
