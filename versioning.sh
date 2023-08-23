@@ -1,6 +1,13 @@
 #/bin/bash
 
 
+DOCKER_REPO='razdahan31/gha-pipeline'
+if [[ "$1" == "--no-rename" ]]; then
+    NEW_TAG=$(curl -s "https://hub.docker.com/v2/repositories/${DOCKER_REPO}/tags" | jq -r '.results[0].name')
+    echo "NEW_TAG=$NEW_TAG"
+    exit 0
+fi
+
 LAST_COMMIT=$(git log -1 --pretty=%B)
 
 DOCKER_REPO='razdahan31/gha-pipeline'

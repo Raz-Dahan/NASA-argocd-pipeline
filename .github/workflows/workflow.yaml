@@ -78,7 +78,7 @@ jobs:
 
       - name: Define TAG and HELM_PACKAGE
         run: |
-          TAG=$(bash versioning.sh)
+          TAG=$(bash versioning.sh --no-rename)
           HELM_PACKAGE=nasa-app-${TAG}.tgz
           echo "TAG=${TAG}" >> $GITHUB_ENV
           echo "HELM_PACKAGE=${HELM_PACKAGE}" >> $GITHUB_ENV
@@ -120,7 +120,7 @@ jobs:
 
       - name: Define TAG and HELM_PACKAGE
         run: |
-          TAG=$(bash versioning.sh)
+          TAG=$(bash versioning.sh --no-rename)
           HELM_PACKAGE=nasa-app-${TAG}.tgz
           echo "TAG=${TAG}" >> $GITHUB_ENV
           echo "HELM_PACKAGE=${HELM_PACKAGE}" >> $GITHUB_ENV
