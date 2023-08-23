@@ -12,8 +12,6 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    outputs:
-      helm-package: ${{ steps.package-helm.outputs.helm-package }}
 
     steps:
       - name: Checkout code
@@ -58,7 +56,6 @@ jobs:
       - name: Package Helm Chart
         run: |
           helm package ./chart -d ./chart
-          echo "::set-output name=helm-package::chart/nasa-app-${{ env.TAG }}.tgz"
 
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v0.3.0
@@ -76,65 +73,79 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up Google Cloud SDK
-      uses: google-github-actions/setup-gcloud@v0.3.0
-      with:
-        project_id: ${{ env.PROJECT_ID }}
-        service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-        export_default_credentials: true
+      - name: Define TAG and HELM_PACKAGE
+        run: |
+          TAG=$(bash versioning.sh)
+          HELM_PACKAGE=nasa-app-${TAG}.tgz
+          echo "TAG=${TAG}" >> $GITHUB_ENV
+          echo "HELM_PACKAGE=${HELM_PACKAGE}" >> $GITHUB_ENV
 
-    - name: Get GKE plugin
-      run: |
-        gcloud components install gke-gcloud-auth-plugin
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0.3.0
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          export_default_credentials: true
 
-    - name: Configure kubectl
-      run: |
-        gcloud container clusters get-credentials test-cluster --region us-central1-a
+      - name: Get GKE plugin
+        run: |
+          gcloud components install gke-gcloud-auth-plugin
 
-    - name: Download Helm chart from GCP bucket
-      run: |
-        gsutil cp gs://${{ env.BUCKET_NAME }}/${{ needs.build.outputs.helm-package }} .
+      - name: Configure kubectl
+        run: |
+          gcloud container clusters get-credentials test-cluster --region us-central1-a
 
-    - name: Deploy Helm chart
-      run: |
-        helm upgrade --install nasa-app ${{ env.HELM_PACKAGE }}
+      - name: Download Helm chart from GCP bucket
+        run: |
+          gsutil cp gs://${{ env.BUCKET_NAME }}/${{ env.HELM_PACKAGE }} .
 
-    - name: Run Helm Tests
-      run: |
-        helm test nasa-app || (curl -X POST https://us-central1-named-signal-392608.cloudfunctions.net/mark_failures && exit 1)
+      - name: Deploy Helm chart
+        run: |
+          helm upgrade --install nasa-app ${{ env.HELM_PACKAGE }}
+
+      - name: Run Helm Tests
+        run: |
+          helm test nasa-app || (curl -X POST https://us-central1-named-signal-392608.cloudfunctions.net/mark_failures && exit 1)
 
   deploy:
     needs: test
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up Google Cloud SDK
-      uses: google-github-actions/setup-gcloud@v0.3.0
-      with:
-        project_id: ${{ env.PROJECT_ID }}
-        service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-        export_default_credentials: true
+      - name: Define TAG and HELM_PACKAGE
+        run: |
+          TAG=$(bash versioning.sh)
+          HELM_PACKAGE=nasa-app-${TAG}.tgz
+          echo "TAG=${TAG}" >> $GITHUB_ENV
+          echo "HELM_PACKAGE=${HELM_PACKAGE}" >> $GITHUB_ENV
 
-    - name: Get GKE plugin
-      run: |
-        gcloud components install gke-gcloud-auth-plugin
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0.3.0
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          export_default_credentials: true
 
-    - name: Configure kubectl
-      run: |
-        gcloud container clusters get-credentials prod-cluster --region us-central1-a
+      - name: Get GKE plugin
+        run: |
+          gcloud components install gke-gcloud-auth-plugin
 
-    - name: Download Helm chart from GCP bucket
-      run: |
-        gsutil cp gs://${{ env.BUCKET_NAME }}/${{ env.HELM_PACKAGE }} .
+      - name: Configure kubectl
+        run: |
+          gcloud container clusters get-credentials prod-cluster --region us-central1-a
 
-    - name: Deploy Helm chart
-      run: |
+      - name: Download Helm chart from GCP bucket
+        run: |
+          gsutil cp gs://${{ env.BUCKET_NAME }}/${{ env.HELM_PACKAGE }} .
+
+      - name: Deploy Helm chart
+        run: |
         helm upgrade --install nasa-app ${{ env.HELM_PACKAGE }}
 
   monitor:
