@@ -1,8 +1,8 @@
 name: Pipeline
 on:
-  # push:
-  #   branches:
-  #     - main
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 env:
@@ -32,7 +32,7 @@ jobs:
 
       - name: Define TAG and HELM_PACKAGE
         run: |
-          TAG: $(bash versioning.sh)
+          TAG=$(bash versioning.sh)
           HELM_PACKAGE=nasa-app-${TAG}.tgz
           echo "TAG=${TAG}" >> $GITHUB_ENV
           echo "HELM_PACKAGE=${HELM_PACKAGE}" >> $GITHUB_ENV
