@@ -28,7 +28,7 @@ jobs:
 
       - name: Create Docker Env
         run: |
-          echo "API_KEY=${{ secrets.API_KEY }}" > ./NASA/.env
+          echo "API_KEY=${{ secrets.API_KEY }}" > ./app/.env
 
       - name: Define TAG and HELM_PACKAGE
         run: |
@@ -40,8 +40,8 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v2
         with:
-          context: ./NASA
-          file: ./NASA/Dockerfile
+          context: ./app
+          file: ./app/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/gha-pipeline:${{ env.TAG }}
 
