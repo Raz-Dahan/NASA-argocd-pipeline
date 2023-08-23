@@ -12,6 +12,8 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      helm-package: ${{ steps.package-helm.outputs.helm-package }}
 
     steps:
       - name: Checkout code
@@ -56,6 +58,7 @@ jobs:
       - name: Package Helm Chart
         run: |
           helm package ./chart -d ./chart
+          echo "::set-output name=helm-package::chart/nasa-app-${{ env.TAG }}.tgz"
 
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v0.3.0
@@ -93,7 +96,7 @@ jobs:
 
     - name: Download Helm chart from GCP bucket
       run: |
-        gsutil cp gs://${{ env.BUCKET_NAME }}/${{ env.HELM_PACKAGE }} .
+        gsutil cp gs://${{ env.BUCKET_NAME }}/${{ needs.build.outputs.helm-package }} .
 
     - name: Deploy Helm chart
       run: |
