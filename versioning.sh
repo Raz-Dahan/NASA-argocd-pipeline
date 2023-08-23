@@ -10,7 +10,6 @@ fi
 
 LAST_COMMIT=$(git log -1 --pretty=%B)
 
-DOCKER_REPO='razdahan31/gha-pipeline'
 LATEST_TAG=$(curl -s "https://hub.docker.com/v2/repositories/${DOCKER_REPO}/tags" | jq -r '.results[0].name')
 
 ARRAY=($(echo "$LATEST_TAG" | awk -F. '{print $1" "$2" "$3}'))
