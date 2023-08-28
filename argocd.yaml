@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nasa
+spec:
+  destination:
+    name: ''
+    namespace: app
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: ''
+    repoURL: 'https://storage.googleapis.com/chart-packages'
+    targetRevision: x
+    chart: nasa-app
+  sources: []
+  project: default

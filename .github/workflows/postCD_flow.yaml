@@ -1,0 +1,59 @@
+name: Pipeline
+# on:
+#   push:
+#     branches:
+#       - main
+  workflow_dispatch:
+
+jobs:
+  monitor:
+    needs: deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0.3.0
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          export_default_credentials: true
+
+      - name: Get GKE plugin
+        run: |
+          gcloud components install gke-gcloud-auth-plugin
+
+      - name: Configure kubectl
+        run: |
+          gcloud container clusters get-credentials prod-cluster --region us-central1-a
+
+      - name: Check and Install Prometheus and Grafana
+        run: |
+          if helm list -n monitoring | grep -q "prometheus"; then
+            echo "Prometheus is already installed."
+          else
+            kubectl create namespace monitoring
+            helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+            helm repo update
+            helm install prometheus prometheus-community/kube-prometheus-stack --namespace monitoring
+            echo "Prometheus installed."
+          fi
+
+  cleanups:
+    needs: deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clean failed packages if there are more than 5
+        run: |
+          curl https://us-central1-named-signal-392608.cloudfunctions.net/failures_handling
+
+      - name: Clean Bucket packages if there are more than 20
+        run: |
+          curl https://us-central1-named-signal-392608.cloudfunctions.net/bucket_handling
+
+      - name: Clean images in DockerHub if there are more than 20
+        run: |
+          curl https://us-central1-named-signal-392608.cloudfunctions.net/docker_registry_handling
