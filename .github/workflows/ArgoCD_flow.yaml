@@ -1,9 +1,13 @@
 name: ArgoCD Setup
-# on:
+on:
 #   push:
 #     branches:
 #       - main
   workflow_dispatch:
+
+env:
+  PROJECT_ID: named-signal-392608
+  BUCKET_NAME: chart-packages
 
 jobs:
   build:
