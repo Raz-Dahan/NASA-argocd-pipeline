@@ -69,7 +69,7 @@ jobs:
           helm plugin install https://github.com/hayorov/helm-gcs.git
           helm gcs init gs://chart-packages
           helm repo add nasa-app gs://chart-packages
-          helm gcs push nasa-app-3.2.15.tgz nasa-app --public
+          helm gcs push ${{ env.HELM_PACKAGE }} nasa-app --public
 
   test:
     needs: build
