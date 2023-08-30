@@ -18,8 +18,11 @@ MINOR=${ARRAY[1]}
 PATCH=${ARRAY[2]}
 
 if [[ "${LAST_COMMIT,,}" == "major" ]]; then
+    PATCH=0
+    MINOR=0
     MAJOR=$((MAJOR + 1))
 elif [[ "${LAST_COMMIT,,}" == "minor" ]]; then
+    PATCH=0
     MINOR=$((MINOR + 1))
 else
     PATCH=$((PATCH + 1))
