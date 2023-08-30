@@ -14,3 +14,7 @@ spec:
     chart: nasa-app
   sources: []
   project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
