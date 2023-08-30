@@ -29,7 +29,12 @@ jobs:
 
       - name: Configure kubectl
         run: |
-          gcloud container clusters get-credentials prod-cluster --region us-central1-a
+          gcloud container clusters get-credentials main-cluster --region us-central1-a
+
+      - name: Create initial namesapces
+        run: |
+          kubectl create namespace test
+          kubectl create namespace app
 
       - name: Inatall ArgoCD
         run: |
@@ -40,10 +45,16 @@ jobs:
         run: |
           kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
 
+      - name: Install ArgoCD-cli
+        run: |
+        sudo curl -L -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+        sudo chmod +x /usr/local/bin/argocd
+
       - name: Get password for 'admin'
         run: |
-          kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+          argocd admin initial-password -n argocd
 
-      - name: Apply ArgoCD Application manifest
+      - name: Apply ArgoCD Applications manifests
         run: |
-          kubectl apply -f argocd.yaml -n argocd
+          kubectl apply -f argocd/test.yaml -n argocd
+          kubectl apply -f argocd/prod.yaml -n argocd
