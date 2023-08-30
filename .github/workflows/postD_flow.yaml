@@ -7,7 +7,6 @@ on:
 
 env:
   PROJECT_ID: named-signal-392608
-  BUCKET_NAME: chart-packages
 
 jobs:
   monitor:

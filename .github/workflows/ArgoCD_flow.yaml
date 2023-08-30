@@ -7,7 +7,6 @@ on:
 
 env:
   PROJECT_ID: named-signal-392608
-  BUCKET_NAME: chart-packages
 
 jobs:
   setup:
@@ -47,4 +46,4 @@ jobs:
 
       - name: Apply ArgoCD Application manifest
         run: |
-          kubectl apply -f argocd.yaml
+          kubectl apply -f argocd.yaml -n argocd
