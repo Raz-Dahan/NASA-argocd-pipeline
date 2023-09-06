@@ -1,19 +1,18 @@
 # CI/CD Project
 
-This GitHub Actions workflow automates the building, testing, deploying, and monitoring process for a Kubernetes application using Docker, Helm, and Google Cloud Platform (GCP) services. <br />
-This pipeline gives developers the option to deploy their app with a simple push.
+This GitHub Actions workflow streamlines the continuous integration (CI) process for a Kubernetes application. It leverages Docker, Helm, and Google Cloud Platform (GCP) services and integrates with Argo CD for efficient application delivery (CD)
 
 ## Workflow Overview
 
-![Pipeline's Diagram](https://raz-jpgs-archive.s3.eu-central-1.amazonaws.com/diagram.jpg)
+![Pipeline's Diagram](https://raz-jpgs-archive.s3.eu-central-1.amazonaws.com/argo-diagram.jpg)
 
 🛠️ **Build**: The workflow starts with building a Docker image of the application, pushing it to Docker Hub, packaging the Helm chart and upload it to GCP bucket.
 
-✅ **Test**: After building, the application is deployed to a test cluster using the Helm chart. Helm tests are then executed on the deployed application.
+✅ **Test**: After building, the application is deployed to a test environment using the Helm chart. Helm tests are then executed on the deployed application.
 
-🌐 **Deploy**: Upon successful testing, the application is deployed to a production cluster using the Helm chart.
+🌐 **Deploy**: Upon successful testing, the application can be deployed to the production environment manually through Argo CD. 
 
-📈 **Monitor**: Finally, the monitoring components (Prometheus and Grafana) are installed on the production cluster if not already present.
+📈 **Optimization**: Finally, the monitoring components (Prometheus and Grafana) are installed on the cluster if not already present and Cleanups are made using Serverless GCP Cloud Functions.
 
 ## Workflow Setup
 
@@ -31,6 +30,8 @@ This pipeline gives developers the option to deploy their app with a simple push
    - `HELM_PACKAGE`: Helm package file name.
    - `TAG`: Tag for Docker image and Helm chart version coming from `versionung.sh`.
 
-3. That's it! Push your code changes to the `main` branch to trigger the workflow.
+3. That's it! Push your code changes to the `test` branch to trigger the CI workflow.
 
-- GCP serverless Cloud Functions can be triggered automatically using an event trigger, but due to financial considerations, it is triggered manually during the `cleanups` job in the workflow.
+3. If it was successful Push your code changes to the `main` and manually sync production environment in Argo CD.
+
+- GCP serverless Cloud Functions can be triggered automatically using an event trigger, but due to financial considerations, it is triggered manually during the `postD_workflow.yaml` with Prometheus and Grafana as well.
