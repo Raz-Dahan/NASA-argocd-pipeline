@@ -43,6 +43,7 @@ jobs:
             helm install prometheus prometheus-community/kube-prometheus-stack --namespace monitoring \
               --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false \
               --set prometheus.prometheusSpec.serviceMonitorNamespaceSelector.matchNames=app
+            kubectl patch svc prometheus-grafana -n monitoring -p '{"spec": {"type": "LoadBalancer"}}'
             echo "Prometheus installed."
           fi
 
