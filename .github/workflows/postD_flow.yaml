@@ -10,7 +10,6 @@ env:
 
 jobs:
   monitor:
-    needs: deploy
     runs-on: ubuntu-latest
 
     steps:
