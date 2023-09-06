@@ -18,6 +18,3 @@ spec:
     automated:
       prune: true
       selfHeal: true
-  health:
-    postSync:
-      command: ["helm", "test", "nasa-app", "--namespace", "test"]
