@@ -47,7 +47,6 @@ jobs:
           fi
 
   cleanups:
-    needs: deploy
     runs-on: ubuntu-latest
 
     steps:
