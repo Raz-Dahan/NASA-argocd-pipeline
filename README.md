@@ -34,4 +34,4 @@ This GitHub Actions workflow streamlines the continuous integration (CI) process
 
 3. If it was successful Push your code changes to the `main` and manually sync production environment in Argo CD.
 
-- GCP serverless Cloud Functions can be triggered automatically using an event trigger, but due to financial considerations, it is triggered manually during the `postD_workflow.yaml` with Prometheus and Grafana as well.
+- GCP serverless Cloud Functions can be triggered automatically using an event trigger, but for clarity, it is triggered manually during the `postD_workflow.yaml` with Prometheus and Grafana as well.
