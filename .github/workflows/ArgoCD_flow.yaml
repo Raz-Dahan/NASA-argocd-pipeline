@@ -54,4 +54,5 @@ jobs:
 
       - name: Get password for 'admin'
         run: |
+          sleep 15
           argocd admin initial-password -n argocd
